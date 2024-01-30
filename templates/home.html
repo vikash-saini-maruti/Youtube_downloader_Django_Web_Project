@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<style>
+    /* Add some basic styles for the scroll down message */
+    .scroll-down-msg {
+        position: absolute;
+        text-align: center;
+        bottom: 10px;
+        /* left: 50%; */
+        transform: translateX(-50%);
+        font-size: 16px;
+        color: #fff;
+        background-color: #d55049;
+        padding: 11px;
+        border-radius: 55px;
+        /* display: none; */
+        cursor: pointer;
+        animation: bounce 1.5s infinite;
+        width: -webkit-fill-available;
+    }
+
+    /* Keyframes for the bounce animation */
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-20px);
+        }
+        60% {
+            transform: translateY(-10px);
+        }
+    }
+</style>
+ <div class="background"  style="background: url('{% static 'img/jsr.png' %}');    background-size: cover;
+ padding-bottom: 285px;">
+   
+   <!-- 
+<div class="container" style="background: url('{% static 'img/jsr.png' %}');  no-repeat center center fixed; background-size: cover;" > 
+-->  
+    <div class="title">
+            <p>Youtube Downloader</p>
+        </div>
+    
+        <div class="content">
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <input type="submit" value="Download" class="btn btn-info btn-block">
+            </form>
+        </div>
+    </div>
+</div>
+    {% if title %}
+    <div class="scroll-down-msg" onclick="scrollToContent()">Click here or Scroll down  👇 to reveal the download links</div>
+        <div class="dbox">
+            <div class="img-thumb">
+                <img class="img-responsive" src="{{ thumb }}">
+            </div>
+            <div id="desl" class="v-about">
+                <p class="v-title">{{ title }}</p>
+                <section class="infos">
+
+                    <li>Duration <b>{{ duration }}</b></li>
+                    <li>Views <b>{{ views }}</b></li>
+                    <li>Likes <b>{{ likes }}</b></li>
+                    <li>Dislikes <b>{{ dislikes }}</b></li>
+
+                </section>
+            </div>
+        </div>
+
+        <div id="m-show">
+            <p class="v-title">{{ title }}</p>
+        </div>
+        <div class="downloads">
+
+            <table>
+                <tr>
+                    <th scope="col">Resolution</th>
+                    <th scope="col">File Size</th>
+                    <th scope="col">Extension</th>
+                    <th scope="col">Download</th>
+                </tr>
+                <tr>
+                    {% for stream in streams %}
+                        <tr>
+                            <td>{{ stream.resolution }}</td>
+                            <td>{{ stream.file_size }}</td>
+                            <td>{{ stream.extension }}</td>
+                            <td><a href="{{ stream.video_url }}" style="text-decoration: none; "
+                                   download="{{ title }}.{{ extension }}" target="_blank">Download <i
+                                    class=" fa fa-download"></i></a></td>
+                        </tr>
+                    {% endfor %}
+                </tr>
+            </table>
+            
+
+            <p class="h3 text-center mt-5 mb-5"></p>
+            <table class="table mt-5 mb-5">
+                
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for stream in stream_audio %}
+                    <tr>
+                        <td>{{ stream.file_size }}</td>
+                        <td>{{ stream.extension }}</td>
+                        <td><a href="{{ stream.video_url }}" style="text-decoration: none;"
+                               download="{{ title }}.{{ extension }}" target="_blank">Download <i
+                                class=" fa fa-download"></i></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            {##}
+            {#            <p class="h3 text-center mt-5 mb-5">Video Only</p>#}
+            {#            <table class="table mt-5">#}
+            {#                <thead class="thead-light">#}
+            {#                <tr>#}
+            {#                    <th scope="col">Resolution</th>#}
+            {#                    <th scope="col">File Size</th>#}
+            {#                    <th scope="col">Extension</th>#}
+            {#                    <th scope="col" >Download</th>#}
+            {#                </tr>#}
+            {#                </thead>#}
+            {#                <tbody>#}
+            {#                {% for stream in stream_video %}#}
+            {#                    <tr>#}
+            {#                        <td>{{ stream.resolution }}</td>#}
+            {#                        <td>{{ stream.file_size }}</td>#}
+            {#                        <td>{{ stream.extension }}</td>#}
+            {#                        <td><a href="{{ stream.video_url }}" style="text-decoration: none;"#}
+            {#                               download="{{ title }}.{{ extension }}" target="_blank">Download <i#}
+            {#                                class=" fa fa-download"></i></a></td>#}
+            {#                    </tr>#}
+            {#                {% endfor %}#}
+            {#                </tbody>#}
+            {#            </table>#}
+            {##}
+        </div>
+
+
+    {% endif %}
+    
+    <script>
+        // Function to smoothly scroll to the content
+        function scrollToContent() {
+            document.querySelector('.scroll-down-msg').style.display = 'none';
+            document.querySelector('.dbox').scrollIntoView({ behavior: 'smooth' });
+        }
+    
+        window.onload = function() {
+            // Show the scroll down message
+            document.querySelector('.scroll-down-msg').style.display = 'block';
+        };
+    </script>
+{% endblock %}
